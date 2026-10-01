@@ -5,7 +5,7 @@ const API_KEY = process.env.MAILGUN_API_KEY || '';
 const DOMAIN = process.env.MAILGUN_DOMAIN || '';
 
 const mailgun = new Mailgun(FormData);
-const mg = mailgun.client({ username: 'api', key: API_KEY });
+const mg = mailgun.client({ username: 'api', key: API_KEY || 'dummy_key_to_prevent_build_crash' });
 
 export async function sendOrderConfirmationEmail(
   toEmail: string,
