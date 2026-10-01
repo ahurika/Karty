@@ -8,7 +8,7 @@ import { useSession, signIn } from 'next-auth/react';
 
 export default function CheckoutPage() {
   const { data: session, status } = useSession();
-  const { items, cartTotal, clearCart } = useCart();
+  const { items, cartTotal, clearCart, updateQuantity, removeItem } = useCart();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
