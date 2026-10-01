@@ -1,0 +1,159 @@
+/* ══════════════════════════════════════════════════════
+   Karty Studio — Base Styles
+   No framework. Vanilla CSS only.
+   ══════════════════════════════════════════════════════ */
+
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --warm-white:  #FAF9F7;
+  --cream:       #F0EBE3;
+  --cream-mid:   #E8E0D5;
+  --ink:         #1C1C1C;
+  --ink-light:   #3D3936;
+  --muted:       #8A8480;
+  --border:      #DDD8D0;
+  --accent:      #1C1C1C;
+
+  --font-body:    'Inter', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  36px;
+
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  24px;
+  --space-lg:  40px;
+  --space-xl:  64px;
+  --space-2xl: 96px;
+
+  --max-width: 1280px;
+}
+
+/* ── Reset ───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--warm-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Typography ─────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button { font-family: var(--font-body); }
+
+img, video { display: block; max-width: 100%; }
+
+/* ── Utilities ───────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 20px; }
+}
+
+/* ── Toast notification ─────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  padding: 14px 22px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Focus ring ─────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ── Neubrutalism Utilities ─────────────────────────── */
+.neu-button {
+  box-shadow: 6px 6px 0px var(--ink);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.neu-button:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0px var(--ink);
+}
+.neu-button:active:not(:disabled) {
+  transform: translate(6px, 6px);
+  box-shadow: 0px 0px 0px var(--ink);
+}
+
+.neu-card {
+  box-shadow: 8px 8px 0px rgba(28,28,28,0.15);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.neu-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0px rgba(28,28,28,0.25);
+}
+
+/* ── Marquee / Carousel ──────────────────────────────── */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--warm-white);
+  padding: 16px 0;
+}
+.marquee-content {
+  display: inline-block;
+  animation: marquee 25s linear infinite;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.marquee-content span {
+  margin: 0 40px;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
