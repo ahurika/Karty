@@ -60,8 +60,10 @@ export async function validateProductsForCheckout(
     }
   }
 
+  console.log("Validation debug:", { items, productIds, missingIds, products, itemsLength: items.length, productsLength: products.length });
+
   if (products.length !== items.length) {
-    throw new Error('One or more products are unavailable or do not exist.');
+    throw new Error(`One or more products are unavailable or do not exist. Debug: items=${JSON.stringify(items)}, products=${JSON.stringify(products)}`);
   }
 
   return products;

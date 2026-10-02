@@ -90,8 +90,8 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           email,
           name,
-          items: items.map(item => ({
-            productId: item.productId,
+          items: items.map((item: any) => ({
+            productId: item.productId || item.id,
             quantity: item.quantity
           }))
         }),
