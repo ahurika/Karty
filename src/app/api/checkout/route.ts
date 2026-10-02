@@ -20,22 +20,28 @@ export async function POST(request: Request) {
 
     // 2. Calculate authoritative total
     let total = 0;
-    const orderItems = items.map((item: any) => {
-      const dbProduct = dbProducts.find((p: any) => p.id === item.productId);
-      if (!dbProduct) throw new Error('Product mismatch');
+    const orderItems: any[] = [];
+    
+    for (const item of items) {
+      const dbProduct = dbProducts.find((p: any) => p.id === (item.productId || item.id));
+      if (!dbProduct) continue; // Skip unavailable products
       
       const quantity = parseInt(item.quantity, 10);
-      if (isNaN(quantity) || quantity <= 0) throw new Error('Invalid quantity');
+      if (isNaN(quantity) || quantity <= 0) continue;
       
       const unitPrice = Number(dbProduct.price);
       total += unitPrice * quantity;
       
-      return {
+      orderItems.push({
         productId: dbProduct.id,
         quantity,
         unitPrice,
-      };
-    });
+      });
+    }
+
+    if (orderItems.length === 0) {
+      return NextResponse.json({ error: 'All products in your cart are currently unavailable.' }, { status: 400 });
+    }
 
     // 3. Create pending order
     const session = await getServerSession(authOptions);
@@ -71,6 +77,7 @@ export async function POST(request: Request) {
         email,
         amount: amountInKobo,
         reference: orderId,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success?reference=${orderId}`,
         metadata: {
           name,
           orderId,
