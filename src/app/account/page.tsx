@@ -24,68 +24,87 @@ export default async function AccountPage() {
   });
 
   return (
-    <div className="container py-16 max-w-4xl">
-      <h1 className="text-display mb-12">My Account</h1>
+    <div style={{ padding: '80px 32px', maxWidth: 'var(--max-width)', margin: '0 auto' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '48px', marginBottom: '48px' }}>My Account</h1>
 
-      <div className="flex flex-col md:flex-row gap-16">
-        <div className="flex-1 md:max-w-xs space-y-6">
-          <div className="p-6 bg-surface-secondary" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
-            <h2 className="text-heading mb-2">{session.user.name}</h2>
-            <p className="text-body text-text-secondary mb-6">{session.user.email}</p>
+      <div style={{ display: 'flex', gap: '64px', flexWrap: 'wrap' }}>
+        {/* Sidebar */}
+        <div style={{ flex: '1 1 300px', maxWidth: '400px' }}>
+          <div className="neu-card" style={{ padding: '32px', border: '2px solid var(--ink)', background: 'var(--warm-white)' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>{session.user.name}</h2>
+            <p style={{ fontSize: '14px', color: 'var(--muted)', marginBottom: '32px' }}>{session.user.email}</p>
             
-            <Link href="/api/auth/signout">
-              <Button variant="secondary" fullWidth>Sign Out</Button>
+            <Link href="/api/auth/signout" className="neu-button" style={{
+              display: 'block',
+              textAlign: 'center',
+              padding: '12px 24px',
+              border: '2px solid var(--ink)',
+              background: 'var(--ink)',
+              color: '#fff',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              fontSize: '12px'
+            }}>
+              Sign Out
             </Link>
           </div>
         </div>
 
-        <div className="flex-[2]">
-          <h2 className="text-heading mb-6">Order History</h2>
+        {/* Main Content */}
+        <div style={{ flex: '2 1 500px' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '32px', marginBottom: '32px' }}>Order History</h2>
           
           {orders.length === 0 ? (
-            <div className="py-8 text-body text-text-secondary">
+            <div style={{ padding: '32px 0', color: 'var(--muted)', fontSize: '15px' }}>
               You haven't placed any orders yet.
             </div>
           ) : (
-            <div className="space-y-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               {orders.map((order: any) => (
-                <div key={order.id} className="border p-6" style={{ borderColor: 'var(--color-border-subtle)' }}>
-                  <div className="flex justify-between border-b pb-4 mb-4" style={{ borderColor: 'var(--color-border-subtle)' }}>
+                <div key={order.id} style={{ border: '2px solid var(--ink)', padding: '24px', background: 'var(--cream)' }}>
+                  
+                  {/* Order Header */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid var(--border)', paddingBottom: '16px', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
                     <div>
-                      <p className="text-metadata text-text-secondary mb-1">Order Placed</p>
-                      <p className="text-body">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '1px' }}>Order Placed</p>
+                      <p style={{ fontSize: '14px', fontWeight: 600 }}>{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <p className="text-metadata text-text-secondary mb-1">Total</p>
-                      <p className="text-body">₦{Number(order.total).toFixed(2)}</p>
+                      <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '1px' }}>Total</p>
+                      <p style={{ fontSize: '14px', fontWeight: 600 }}>₦{Number(order.total).toLocaleString('en-NG')}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-metadata text-text-secondary mb-1">Status</p>
-                      <p className="text-body font-medium">{order.status}</p>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '1px' }}>Status</p>
+                      <p style={{ fontSize: '14px', fontWeight: 700, textTransform: 'uppercase' }}>{order.status}</p>
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
+                  {/* Order Items */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {order.items.map((item: any) => (
-                      <div key={item.id} className="flex gap-4">
-                        <div className="w-16 h-24 relative overflow-hidden rounded-xl" style={{ backgroundColor: "var(--color-surface-secondary)" }}>
-                          {item.product.imageUrl && (
+                      <div key={item.id} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <div style={{ width: '64px', height: '80px', position: 'relative', border: '2px solid var(--ink)', background: 'var(--warm-white)', overflow: 'hidden' }}>
+                          {item.product.imageUrl ? (
                             <Image
                               src={item.product.imageUrl}
                               alt={item.product.name}
                               fill
-                              className="object-cover"
+                              style={{ objectFit: 'cover' }}
                             />
+                          ) : (
+                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>No Img</div>
                           )}
                         </div>
                         <div>
-                          <p className="text-body font-medium">{item.product.name}</p>
-                          <p className="text-body text-text-secondary">Qty: {item.quantity}</p>
-                          <p className="text-body text-text-secondary">₦{Number(item.unitPrice).toFixed(2)}</p>
+                          <p style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>{item.product.name}</p>
+                          <p style={{ fontSize: '13px', color: 'var(--muted)' }}>Qty: {item.quantity}</p>
+                          <p style={{ fontSize: '13px', color: 'var(--ink)', fontWeight: 500 }}>₦{Number(item.unitPrice).toLocaleString('en-NG')}</p>
                         </div>
                       </div>
                     ))}
                   </div>
+                  
                 </div>
               ))}
             </div>
