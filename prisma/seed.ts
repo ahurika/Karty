@@ -51,6 +51,8 @@ async function main() {
     }
   ];
 
+  await prisma.orderItem.deleteMany({});
+  await prisma.order.deleteMany({});
   await prisma.product.deleteMany({}); // clear existing
   for (const product of products) {
     await prisma.product.create({

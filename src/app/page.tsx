@@ -1,48 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getAvailableProducts } from "@/lib/repositories/product";
+import { getAvailableProducts, FALLBACK_PRODUCTS } from "@/lib/repositories/product";
 import { ArtworkGrid } from "@/components/artwork/ArtworkGrid";
 import { ArrowRight2 } from "iconsax-react";
-
-/* ── Fallback artwork for when DB is unavailable ── */
-const FALLBACK: any[] = [
-  {
-    id: "1",
-    name: "Abstract Canvas 01",
-    price: 45000,
-    isAvailable: true,
-    imageUrl: "https://images.pexels.com/photos/1045113/pexels-photo-1045113.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: "2",
-    name: "Nature Study Illustration",
-    price: 32000,
-    isAvailable: true,
-    imageUrl: "https://images.pexels.com/photos/1406863/pexels-photo-1406863.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: "3",
-    name: "Premium Sketchbook",
-    price: 12000,
-    isAvailable: true,
-    imageUrl: "https://images.pexels.com/photos/733856/pexels-photo-733856.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: "4",
-    name: "Charcoal Sketch Set",
-    price: 18000,
-    isAvailable: true,
-    imageUrl: "https://images.pexels.com/photos/3778145/pexels-photo-3778145.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-];
 
 export default async function Home() {
   let products: any[] = [];
   try {
     products = await getAvailableProducts();
-    if (!products.length) products = FALLBACK;
+    if (!products.length) products = FALLBACK_PRODUCTS.slice(0, 4);
   } catch {
-    products = FALLBACK;
+    products = FALLBACK_PRODUCTS.slice(0, 4);
   }
 
   const [heroProduct, secondProduct] = products;

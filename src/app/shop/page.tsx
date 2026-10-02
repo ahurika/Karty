@@ -1,4 +1,4 @@
-import { getAvailableProducts } from "@/lib/repositories/product";
+import { getAvailableProducts, FALLBACK_PRODUCTS } from "@/lib/repositories/product";
 import { ArtworkGrid } from "@/components/artwork/ArtworkGrid";
 
 export default async function ShopPage() {
@@ -6,16 +6,10 @@ export default async function ShopPage() {
   let products: any[] = [];
   try {
     products = await getAvailableProducts();
+    if (!products.length) products = FALLBACK_PRODUCTS;
   } catch (error) {
     console.error("Failed to load products from DB, using fallback", error);
-    products = [
-      { id: "1", name: 'Abstract Canvas 01', price: 45000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1045113/pexels-photo-1045113.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "2", name: 'Nature Study Illustration', price: 32000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1406863/pexels-photo-1406863.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "3", name: 'Premium Sketchbook', price: 12000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/733856/pexels-photo-733856.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "4", name: 'Charcoal Sketch Set', price: 18000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/3778145/pexels-photo-3778145.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "5", name: 'Ocean Fluid Art', price: 55000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1606591/pexels-photo-1606591.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "6", name: 'Acrylic Paint Bundle', price: 24000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=800" }
-    ];
+    products = FALLBACK_PRODUCTS;
   }
 
   return (

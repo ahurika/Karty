@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getProductById, getAvailableProducts } from '@/lib/repositories/product';
+import { getProductById, getAvailableProducts, FALLBACK_PRODUCTS } from '@/lib/repositories/product';
 import { AddToCartButton } from '@/components/products/AddToCartButton';
 import { ArtworkGrid } from '@/components/artwork/ArtworkGrid';
 import Link from 'next/link';
@@ -13,13 +13,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   try {
     product = await getProductById(resolvedParams.id);
     allProducts = await getAvailableProducts();
+    if (!product && !allProducts.length) {
+      allProducts = FALLBACK_PRODUCTS;
+      product = allProducts.find((p: any) => p.id === resolvedParams.id);
+    }
   } catch (error) {
     console.error("Failed to fetch product from DB, using fallback", error);
-    allProducts = [
-      { id: "1", name: 'Abstract Canvas 01', description: 'An original abstract painting focusing on texture and depth.', price: 45000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1045113/pexels-photo-1045113.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "2", name: 'Nature Study Illustration', description: 'A detailed botanical illustration printed on heavy watercolor paper.', price: 32000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/1406863/pexels-photo-1406863.jpeg?auto=compress&cs=tinysrgb&w=800" },
-      { id: "3", name: 'Premium Sketchbook', description: 'Lay-flat sketchbook with 160gsm acid-free paper.', price: 12000, isAvailable: true, imageUrl: "https://images.pexels.com/photos/733856/pexels-photo-733856.jpeg?auto=compress&cs=tinysrgb&w=800" }
-    ];
+    allProducts = FALLBACK_PRODUCTS;
     product = allProducts.find((p: any) => p.id === resolvedParams.id);
   }
 
