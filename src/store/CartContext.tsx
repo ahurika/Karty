@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export type CartItem = {
   productId: string;
@@ -25,45 +26,99 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load from local storage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('karty_cart');
-    if (saved) {
-      try {
-        setItems(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse cart');
+  const fetchCartFromAPI = async () => {
+    try {
+      const res = await fetch('/api/cart');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cart?.items) {
+          const apiItems = data.cart.items.map((i: any) => ({
+            productId: i.productId,
+            name: i.product.name,
+            price: Number(i.product.price),
+            quantity: i.quantity,
+            imageUrl: i.product.images?.[0] || null,
+          }));
+          setItems(apiItems);
+        }
       }
+    } catch (e) {
+      console.error('Failed to fetch cart from API', e);
     }
-    setIsInitialized(true);
-  }, []);
+  };
 
-  // Save to local storage on change
+  // Sync logic depending on auth status
   useEffect(() => {
-    if (isInitialized) {
+    if (status === 'authenticated') {
+      // If logged in, fetch from API immediately and set up polling for instant sync
+      fetchCartFromAPI();
+      setIsInitialized(true);
+      
+      const interval = setInterval(() => {
+        fetchCartFromAPI();
+      }, 3000);
+      
+      return () => clearInterval(interval);
+    } else if (status === 'unauthenticated') {
+      // If guest, use localStorage
+      const saved = localStorage.getItem('karty_cart');
+      if (saved) {
+        try {
+          setItems(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to parse cart');
+        }
+      }
+      setIsInitialized(true);
+    }
+  }, [status]);
+
+  // Save to local storage for guests
+  useEffect(() => {
+    if (isInitialized && status === 'unauthenticated') {
       localStorage.setItem('karty_cart', JSON.stringify(items));
     }
-  }, [items, isInitialized]);
+  }, [items, isInitialized, status]);
+
+  const updateAPICart = async (productId: string, quantity: number) => {
+    if (status === 'authenticated') {
+      try {
+        await fetch('/api/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, quantity }),
+        });
+        fetchCartFromAPI();
+      } catch (e) {
+        console.error('Failed to update API cart', e);
+      }
+    }
+  };
 
   const addItem = (newItem: CartItem) => {
+    let newQuantity = newItem.quantity;
     setItems((currentItems) => {
       const existing = currentItems.find((item) => item.productId === newItem.productId);
       if (existing) {
+        newQuantity = existing.quantity + newItem.quantity;
         return currentItems.map((item) =>
           item.productId === newItem.productId
-            ? { ...item, quantity: item.quantity + newItem.quantity }
+            ? { ...item, quantity: newQuantity }
             : item
         );
       }
       return [...currentItems, newItem];
     });
+    updateAPICart(newItem.productId, newQuantity);
   };
 
   const removeItem = (productId: string) => {
     setItems((current) => current.filter((item) => item.productId !== productId));
+    updateAPICart(productId, 0);
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -71,10 +126,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((current) =>
       current.map((item) => (item.productId === productId ? { ...item, quantity } : item))
     );
+    updateAPICart(productId, quantity);
   };
 
   const clearCart = () => {
     setItems([]);
+    // In a real scenario, you might want an endpoint to clear the cart entirely
   };
 
   const cartTotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
