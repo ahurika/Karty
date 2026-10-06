@@ -5,8 +5,8 @@ export async function GET(req: Request) {
   
   // Use the local Expo Go LAN URL (matches API_URL in AccountScreen.js)
   // To test on your physical device, deploy this change to Vercel,
-  // OR use a local tunnel (like ngrok) and update redirectUri in AccountScreen.js.
-  const expoTunnel = 'exp://192.168.0.199:8082';
+  // Update this to your current Expo tunnel URL when testing with Expo Go
+  const expoTunnel = 'exp://m5gpera-ahurika-8081.exp.direct';
   
   // Forward all query parameters (like id_token, state, etc.) back to the Expo app
   const query = url.search;

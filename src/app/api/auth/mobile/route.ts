@@ -29,7 +29,11 @@ export async function POST(req: Request) {
 
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_CLIENT_ID, // Ensure the mobile app uses the same Client ID or you add its Client ID here
+      audience: [
+        process.env.GOOGLE_CLIENT_ID || '',
+        '662467349240-mqv4m4f02a0gcc30h0m5ifkqjphlipu7.apps.googleusercontent.com', // Android/Web Client ID
+        '662467349240-l1qao2aabfaftpltena78vqa45l7u7gg.apps.googleusercontent.com'  // iOS Client ID
+      ],
     });
 
     const payload = ticket.getPayload();
