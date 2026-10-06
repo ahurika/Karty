@@ -22,20 +22,6 @@ const dmSerif = DM_Serif_Display({
 export const metadata: Metadata = {
   title: "Karty Studio — Illustration & Art Prints",
   description: "Original illustration prints, art cards and creative work. A digital studio where art can be discovered and collected.",
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'Karty',
-  },
-};
-
-export const viewport = {
-  themeColor: '#ffffff',
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
