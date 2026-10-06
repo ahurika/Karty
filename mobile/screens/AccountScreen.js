@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
 WebBrowser.maybeCompleteAuthSession();
-const API_URL = 'http://192.168.0.199:3000';
+
+// Using the deployed Vercel URL so your iPhone can reach the backend over the internet!
+const API_URL = 'https://karty-murex.vercel.app';
 
 export default function AccountScreen() {
   const [token, setToken] = useState(null);
   const isFocused = useIsFocused();
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    webClientId: '662467349240-mqv4m4f02a0gcc30h0m5ifkqjphlipu7.apps.googleusercontent.com',
-    iosClientId: '662467349240-l1qao2aabfaftpltena78vqa45l7u7gg.apps.googleusercontent.com',
-    androidClientId: '662467349240-mqv4m4f02a0gcc30h0m5ifkqjphlipu7.apps.googleusercontent.com',
-    redirectUri: 'https://karty-murex.vercel.app/api/auth/proxy',
-  });
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: '662467349240-mqv4m4f02a0gcc30h0m5ifkqjphlipu7.apps.googleusercontent.com',
+      redirectUri: 'https://karty-murex.vercel.app/api/auth/proxy',
+      scopes: ['openid', 'profile', 'email'],
+      responseType: 'id_token',
+      extraParams: { nonce: 'dev_nonce' },
+    },
+    { authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth' }
+  );
 
   useEffect(() => {
     AsyncStorage.getItem('sessionToken').then(setToken);

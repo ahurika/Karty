@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Replace with your computer's local IP address if running on a physical device
 // OR use 'http://10.0.2.2:3000' for Android Emulator
-const API_URL = 'http://192.168.0.199:3000'; 
+const API_URL = 'https://karty-murex.vercel.app'; 
 
 export default function ShopScreen() {
   const [products, setProducts] = useState([]);

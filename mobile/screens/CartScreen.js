@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-const API_URL = 'http://192.168.0.199:3000';
+const API_URL = 'https://karty-murex.vercel.app';
 
 export default function CartScreen() {
   const [cartItems, setCartItems] = useState([]);
