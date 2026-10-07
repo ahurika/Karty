@@ -21,6 +21,7 @@ export default function AccountScreen() {
       scopes: ['openid', 'profile', 'email'],
       responseType: 'id_token',
       extraParams: { nonce: 'dev_nonce' },
+      usePKCE: false,
     },
     { authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth' }
   );

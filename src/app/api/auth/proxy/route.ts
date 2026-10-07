@@ -3,9 +3,8 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request) {
   const url = new URL(req.url);
   
-  // Forward all query parameters (like id_token, state, etc.) back to the native Karty app
+  // For testing on iPhone in Expo Go, redirect back to the Expo tunnel
+  const expoTunnel = 'exp://m5gpera-ahurika-8081.exp.direct';
   const query = url.search;
-  
-  // Try to redirect to the native app scheme
-  return NextResponse.redirect(`karty://expo-auth-session${query}`);
+  return NextResponse.redirect(`${expoTunnel}${query}`);
 }
