@@ -25,6 +25,12 @@
     },
     "plugins": [
       "expo-web-browser"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7f661cdd-fd30-44d8-9c44-012d425d24f9"
+      }
+    },
+    "owner": "ahurika"
   }
 }
